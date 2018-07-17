@@ -25,7 +25,7 @@ const MessageInput = (props) => {
       <Icon
         containerStyle={{marginLeft: 0}}
         iconStyle={{margin: 0, padding: 0}}
-        name='envelope'
+        name='send'
         type='font-awesome'
         color={props.textMessage.length > 0 ? '#7d62d9' : '#494e57'}
         size={15}

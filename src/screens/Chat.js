@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ListView } from 'react-native';
+import { View, ListView, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import { 
   initChatScreen,
@@ -143,13 +143,16 @@ class Chat extends Component {
             onEndReachedThreshold={-100}
           />
         </View>
-        <View style={styles.messageInputViewStyle}>
+        <KeyboardAvoidingView
+        style={styles.messageInputViewStyle}
+        behavior="padding"
+        keyboardVerticalOffset={90}>
           <MessageInput 
             onRightPress={this._onSendButtonPress}
             textMessage={this.state.textMessage}
             onChangeText={this._onTextMessageChanged}
           />
-        </View>
+        </KeyboardAvoidingView>
       </View>
     )
   }
