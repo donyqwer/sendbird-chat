@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Expo from 'expo';
-import {  View } from 'react-native';
+import { View } from 'react-native';
 import PropTypes from 'prop-types'
 
 export default class StatusBar extends Component {

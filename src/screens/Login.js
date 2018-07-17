@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
-import StatusBar from '../common/StatusBar';
+import StatusBar from '../components/common/StatusBar';
 import SendBird from 'sendbird';
 
 export default class Login extends Component {
