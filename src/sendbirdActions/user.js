@@ -21,3 +21,16 @@ export const sbConnect = (userId, nickname) => {
     })
   })
 };
+
+export const sbDisconnect = () => {
+  return new Promise((resolve, reject) => {
+    const sb = SendBird.getInstance();
+    if (sb) {
+      sb.disconnect(() => {
+        resolve(null);
+      });
+    } else {
+      resolve(null);
+    }
+  })
+};

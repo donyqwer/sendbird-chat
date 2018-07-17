@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { sendbirdLogin } from '../actions';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+import { NavigationActions, StackActions } from 'react-navigation';
 import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
 import StatusBar from '../components/common/StatusBar';
 import SendBird from 'sendbird';
@@ -19,9 +20,15 @@ class Login extends Component {
   componentWillReceiveProps(props) {
     const { user, error } = props;
     if (user) {
+      const resetAction = StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({ routeName: 'Menu' })
+        ]
+      })
       this.setState({ userId: '', nickname: '' }, () => {
-      this.props.navigation.navigate('Menu');
-    })
+        this.props.navigation.dispatch(resetAction);
+      })
   }
   }
 
