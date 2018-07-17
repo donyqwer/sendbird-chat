@@ -4,6 +4,10 @@ import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-nativ
 import StatusBar from './common/StatusBar';
 
 export default class Login extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <View>
