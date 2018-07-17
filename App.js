@@ -8,12 +8,14 @@ import Login from './src/screens/Login';
 import Menu from './src/screens/Menu';
 import Profile from './src/screens/Profile';
 import OpenChanel from './src/screens/OpenChanel';
+import Chat from './src/screens/Chat';
 
 const MainNavigator = createStackNavigator({
   Login: { screen: Login },
   Menu: { screen: Menu },
   Profile: { screen: Profile },
-  OpenChanel: { screen: OpenChanel }
+  OpenChanel: { screen: OpenChanel },
+  Chat: { screen: Chat }
 });
 
 export default class App extends Component {

@@ -53,7 +53,10 @@ class OpenChanel extends Component {
   }
     
   _onListItemPress = (channelUrl) => {
-      // TODO: enter channel
+    this.props.navigation.navigate(
+      'Chat', 
+      { channelUrl: channelUrl }
+  );
   }
 
   _handleScroll = (e) => {
