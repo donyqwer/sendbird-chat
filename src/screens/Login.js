@@ -1,17 +1,28 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { sendbirdLogin } from '../actions';
 import { View, Text, StyleSheet } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
 import StatusBar from '../components/common/StatusBar';
 import SendBird from 'sendbird';
 
-export default class Login extends Component {
+
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: '',
-      nickname: '',
-      error: ''
+      nickname: ''
     }
+  }
+
+  componentWillReceiveProps(props) {
+    const { user, error } = props;
+    if (user) {
+      this.setState({ userId: '', nickname: '' }, () => {
+      this.props.navigation.navigate('Menu');
+    })
+  }
   }
 
   static navigationOptions = {
@@ -77,7 +88,7 @@ export default class Login extends Component {
               />
           </View>
           <View style={styles.containerStyle}>
-              <FormValidationMessage>Error message</FormValidationMessage>
+              <FormValidationMessage>{this.props.error}</FormValidationMessage>
           </View>
         </View>
       </View>
@@ -90,3 +101,10 @@ const styles = StyleSheet.create({
     
   }
 });
+
+function mapStateToProps({ login }) {
+  const { error, user } = login;
+  return { error, user };
+};
+
+export default connect(mapStateToProps, { sendbirdLogin })(Login);
