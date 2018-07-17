@@ -9,3 +9,5 @@ export const GET_PROFILE_SUCCESS = 'get_profile_success';
 export const UPDATE_PROFILE_SUCCESS = 'update_profile_success';
 export const UPDATE_PROFILE_FAIL = 'update_profile_fail';
 
+export const OPEN_CHANNEL_LIST_SUCCESS = 'open_channel_list_success';
+export const OPEN_CHANNEL_LIST_FAIL = 'open_channel_list_fail';
