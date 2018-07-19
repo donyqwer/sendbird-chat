@@ -3,7 +3,7 @@ import Expo from 'expo';
 import { View } from 'react-native';
 import PropTypes from 'prop-types'
 
-export default class StatusBar extends Component {
+class StatusBar extends Component {
   render() {
     return (
       <View style={
@@ -20,3 +20,5 @@ export default class StatusBar extends Component {
 StatusBar.propTypes = {
   color: PropTypes.string.isRequired,
 }
+
+export { StatusBar };

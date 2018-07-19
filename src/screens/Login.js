@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { sendbirdLogin } from '../actions';
-import { View, StyleSheet } from 'react-native';
+import { initLogin, sendbirdLogin } from '../actions';
+import { View, KeyboardAvoidingView, StyleSheet, Text, TextInput } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import { FormLabel, FormInput, FormValidationMessage, Button } from 'react-native-elements';
-import StatusBar from '../components/common/StatusBar';
-import SendBird from 'sendbird';
+import { Button, Spinner, StatusBar, LoginInput } from '../components/common';
 
 
 class Login extends Component {
@@ -17,19 +15,27 @@ class Login extends Component {
     }
   }
 
+  componentDidMount() {
+    this.props.initLogin();
+  }
+
   componentWillReceiveProps(props) {
-    const { user, error } = props;
+    let { user, error } = props;
     if (user) {
       const resetAction = StackActions.reset({
         index: 0,
         actions: [
           NavigationActions.navigate({ routeName: 'Menu' })
         ]
-      })
-      this.setState({ userId: '', nickname: '' }, () => {
+      });
+      this.setState({ userId: '', nickname: '', isLoading: false }, () => {
         this.props.navigation.dispatch(resetAction);
-      })
-  }
+      });
+    }
+
+    if (error) {
+      this.setState({ isLoading: false });
+    }
   }
 
   static navigationOptions = {
@@ -46,56 +52,58 @@ class Login extends Component {
 
   _onButtonPress = () => {
     const { userId, nickname } = this.state;
-    const sb = new SendBird({ 'appId': 'CF31088F-09FA-4A6D-81A9-8B06685C8924' });
-    sb.connect(userId, (user, error) => {
-      if (error) {
-        this.setState({ error });
-      } else {
-        sb.updateCurrentUserInfo(nickname, null, (user, error) => {
-          if (error) {
-            this.setState({ error });
-          } else {
-            this.setState({
-              userId: '',
-              nickname: '',
-              error: ''
-            }, () => {
-              this.props.navigation.navigate('Menu');
-            });
-          }
-        })
-      }
-    })
+    this.setState({ isLoading: true }, () => {
+      this.props.sendbirdLogin({ userId, nickname });
+    });
   }
 
   render() {
     return (
-      <View>
-        <StatusBar color={"rgba(0, 0, 0, 1)"} /> 
-        <View style={styles.containerStyle}>
-          <View style={styles.containerStyle}>
-            <FormLabel>User ID</FormLabel>
-            <FormInput
-              value={this.state.userId}
+      <View style={styles.containerStyle}>
+        <StatusBar color={'#000'}/>
+        <Spinner visible={this.props.isLoading} />
+        <View style={styles.content}>
+          <View style={styles.logoViewStyle}>
+            <Text style={styles.logoTextTitle}>ChatApp</Text>
+            <Text style={styles.logoTextSubTitle}>React Native</Text>
+          </View>
+
+          <View style={styles.inputViewStyle}>
+            <LoginInput
+              placeholder={'User ID'}
+              returnKeyType={'next'}
               onChangeText={this._userIdChanged}
+              value={this.state.userId}
+              autoCapitalize={'none'}
+              underlineColorAndroid={'transparent'}
             />
-          </View>
-          <View style={styles.containerStyle}>
-            <FormLabel>Nickname</FormLabel>
-            <FormInput
-              value={this.state.nickname}
+
+            <LoginInput
+              placeholder={'Nickname'}
+              returnKeyType={'done'}
               onChangeText={this._nicknameChanged}
+              value={this.state.nickname}
+              autoCapitalize={'sentences'}
+              underlineColorAndroid={'transparent'}
             />
           </View>
-          <View style={styles.containerStyle}>
-              <Button
-                onPress={this._onButtonPress}
-                buttonStyle={{backgroundColor: '#2096f3'}}
-                title='Connect' 
-              />
-          </View>
-          <View style={styles.containerStyle}>
-              <FormValidationMessage>{this.props.error}</FormValidationMessage>
+
+          <KeyboardAvoidingView
+            style={{ alignItems: 'center' }}
+            behavior={'position'}
+            keyboardVerticalOffset={0}>
+            <Button
+              title='CONNECT'
+              buttonStyle={styles.buttonStyle}
+              onPress={this._onButtonPress}
+              disabled={this.state.isLoading}
+            />
+          </KeyboardAvoidingView>
+          
+          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+
+          <View style={[styles.footerViewStyle]}>
+            <Text style={styles.footerTextStyle}>Sample ChatApp</Text>
           </View>
         </View>
       </View>
@@ -103,15 +111,68 @@ class Login extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    
-  }
-});
-
 function mapStateToProps({ login }) {
-  const { error, user } = login;
-  return { error, user };
+  const { isLoading, error, user } = login;
+  return { isLoading, error, user };
 };
 
-export default connect(mapStateToProps, { sendbirdLogin })(Login);
+export default connect(mapStateToProps, { sendbirdLogin, initLogin })(Login);
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    backgroundColor: '#D13A42', 
+    flex: 1
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  logoViewStyle: {
+    marginBottom: 20,
+    alignItems: 'center'
+  },
+  logoTextTitle: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 60,
+  },
+  logoTextSubTitle: {
+    color: '#FFF',
+    fontSize: 15,
+    letterSpacing: 4,
+  },
+  inputViewStyle: {
+    alignItems: 'center',
+  },
+  inputStyle: {
+    fontSize:13,
+    backgroundColor:'#fff'
+  },
+  buttonStyle: {
+    height: 40,
+    width: 250,
+    margin: 10,
+    borderRadius: 18,
+    borderColor: '#fff',
+    borderWidth: 2,
+    padding: 3,
+    alignItems: 'center',
+    justifyContent:'center',
+  },
+  errorTextStyle: {
+    alignSelf: 'center', 
+    fontSize: 12, 
+    color: '#f8e823'
+  },
+  footerViewStyle: {
+    paddingLeft: 28,
+    paddingRight: 28,
+    marginTop: 15, 
+    flexDirection: 'column'   
+  },
+  footerTextStyle: {
+    alignSelf: 'center', 
+    fontSize: 12, 
+    color: '#fff'
+  }
+});
