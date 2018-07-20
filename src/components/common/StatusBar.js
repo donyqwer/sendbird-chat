@@ -17,8 +17,4 @@ class StatusBar extends Component {
   }
 }
 
-StatusBar.propTypes = {
-  color: PropTypes.string.isRequired,
-}
-
 export { StatusBar };

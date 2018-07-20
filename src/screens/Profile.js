@@ -9,29 +9,40 @@ import {
   FormInput, 
   FormValidationMessage
 } from 'react-native-elements';
+import { Spinner } from '../components/common';
 
 class Profile extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { params } = navigation.state;
-    return {
-      title: 'PROFILE',
-      headerRight: (
-        <Button 
-          containerViewStyle={{marginLeft: 0, marginRight: 0}}
-          buttonStyle={{paddingRight: 14}}
-          color={'#7d62d9'}
-          title='save'
-          backgroundColor='transparent'
-          onPress={ () => { params.handleSave() } }
-        />
-      )
-    }
-  };
+  const { params } = navigation.state;
+  return {
+    title: 'Profile',
+    headerLeft: (
+      <Button 
+        containerViewStyle={{marginLeft: 0, marginRight: 0}}
+        buttonStyle={{paddingLeft: 14}}
+        icon={{ name: 'chevron-left', type: 'font-awesome', color: '#7d62d9', size: 18 }}
+        backgroundColor='transparent'
+        onPress={ () => navigation.goBack() }
+      />
+    ),
+    headerRight: (
+      <Button 
+        containerViewStyle={{marginLeft: 0, marginRight: 0}}
+        buttonStyle={{paddingRight: 14}}
+        color={'#7d62d9'}
+        title='save'
+        backgroundColor='transparent'
+        onPress={ () => { params.handleSave() } }
+      />
+    )
+  }
+};
 
   constructor(props) {
     super(props);
     this.state = {
-      profileUrl: '',
+      isLoading: false,
+      profileUrl: 'http://via.placeholder.com/200/CB3348/FFF',
       nickname: ''
     }
   }
@@ -39,14 +50,17 @@ class Profile extends Component {
   componentDidMount() {
     this.props.navigation.setParams({ handleSave: this._onSaveButtonPress })
     this.props.initProfile();
-    this.props.getCurrentUserInfo();
+    this.setState({ isLoading: true }, () => {
+      this.props.getCurrentUserInfo();
+    });
   }
 
   componentWillReceiveProps(props) {
     const { userInfo, isSaved } = props;
     if (userInfo) {
       const { profileUrl, nickname } = userInfo;
-      this.setState({ profileUrl, nickname });
+      const isLoading = false;
+      this.setState({ profileUrl, nickname, isLoading });
     }
     if (isSaved) {
       this.props.navigation.goBack();
@@ -64,6 +78,7 @@ class Profile extends Component {
   render() {
     return (
       <View style={styles.containerStyle}>
+        <Spinner visible={this.state.isLoading} />
         <View style={{justifyContent: 'center', flexDirection: 'row', marginTop: 50, marginBottom: 50}}>
           <Avatar 
             large

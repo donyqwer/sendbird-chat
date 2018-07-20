@@ -49,14 +49,16 @@ export const sbDisconnect = () => {
   return new Promise((resolve, reject) => {
     const sb = SendBird.getInstance();
     if (sb) {
-      sb.disconnect(() => {
-        resolve(null);
+      AsyncStorage.removeItem('user', () => {
+        sb.disconnect(() => {
+          resolve(null);
+        });
       });
     } else {
       resolve(null);
     }
   })
-};
+}
 
 export const sbGetCurrentInfo = () => {
   const sb = SendBird.getInstance();
