@@ -10,9 +10,9 @@ const MessageInput = (props) => {
       <FormInput 
         containerStyle={{marginLeft: 20, marginRight: 8}}
         inputStyle={{
-            color: '#212529', 
-            minHeight: 36,
-            width: width - 60,
+          color: '#212529', 
+          minHeight: 36,
+          width: width - 60,
         }}
         placeholder={'Your message'}
         autoCapitalize='none'

@@ -103,7 +103,7 @@ class Login extends Component {
           <Text style={styles.errorTextStyle}>{this.props.error}</Text>
 
           <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Sample ChatApp</Text>
+            <Text style={styles.footerTextStyle}>Using SendBird SDK</Text>
           </View>
         </View>
       </View>

@@ -78,51 +78,51 @@ const registerHandler = (channelUrl, dispatch) => {
 export const getPrevMessageList = (previousMessageListQuery) => {
     return (dispatch) => {
         if (previousMessageListQuery.hasMore) {
-            sbGetMessageList(previousMessageListQuery)
-            .then((messages) => {
-                dispatch({
-                    type: MESSAGE_LIST_SUCCESS,
-                    list: messages
-                });
-            })
-            .catch( (error) => dispatch({ type: MESSAGE_LIST_FAIL }) )
+          sbGetMessageList(previousMessageListQuery)
+          .then((messages) => {
+            dispatch({
+              type: MESSAGE_LIST_SUCCESS,
+              list: messages
+            });
+          })
+          .catch( (error) => dispatch({ type: MESSAGE_LIST_FAIL }) )
         } else {
-            dispatch({ type: MESSAGE_LIST_FAIL });
+          dispatch({ type: MESSAGE_LIST_FAIL });
         }
     }
 }
 
 export const onSendButtonPress = (channelUrl, textMessage) => {
-    return (dispatch) => {
-        sbGetOpenChannel(channelUrl)
-        .then((channel) => {
-            const messageTemp = sbSendTextMessage(channel, textMessage, (message, error) => {
-                if (error) {
-                    dispatch({ type: SEND_MESSAGE_FAIL });
-                } else {
-                    dispatch({ 
-                        type: SEND_MESSAGE_SUCCESS,
-                        message: message
-                    });
-                }
-            });
-            dispatch({
-                type: SEND_MESSAGE_TEMPORARY,
-                message: messageTemp
-            });
-        })
-        .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
-    }
+  return (dispatch) => {
+    sbGetOpenChannel(channelUrl)
+    .then((channel) => {
+      const messageTemp = sbSendTextMessage(channel, textMessage, (message, error) => {
+        if (error) {
+          dispatch({ type: SEND_MESSAGE_FAIL });
+        } else {
+          dispatch({ 
+            type: SEND_MESSAGE_SUCCESS,
+            message: message
+          });
+        }
+      });
+      dispatch({
+        type: SEND_MESSAGE_TEMPORARY,
+        message: messageTemp
+      });
+    })
+    .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
+  }
 }
 
 export const channelExit = (channelUrl) => {
-    return (dispatch) => {
-        sbGetOpenChannel(channelUrl)
-        .then((channel) => {
-            sbOpenChannelExit(channel)
-            .then((response) => dispatch({ type: CHANNEL_EXIT_SUCCESS }))
-            .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
-        })
-        .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
-    }
+  return (dispatch) => {
+    sbGetOpenChannel(channelUrl)
+    .then((channel) => {
+      sbOpenChannelExit(channel)
+      .then((response) => dispatch({ type: CHANNEL_EXIT_SUCCESS }))
+      .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
+    })
+    .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
+  }
 }

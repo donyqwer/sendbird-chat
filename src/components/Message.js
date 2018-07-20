@@ -24,11 +24,11 @@ class Message extends Component {
         <View style={{flexDirection: this.props.isUser ? 'row-reverse' : 'row', paddingLeft: 14, paddingRight: 14, paddingTop: 4}}>
             { this._renderMessageAvatar() }
             <MessageContainer 
-                isShow={this.props.isShow}
-                isUser={this.props.isUser}
-                nickname={this.props.nickname}
-                message={this.props.message}
-                time={this.props.time}
+              isShow={this.props.isShow}
+              isUser={this.props.isUser}
+              nickname={this.props.nickname}
+              message={this.props.message}
+              time={this.props.time}
             />
         </View>
       </View>

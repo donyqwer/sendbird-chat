@@ -4,17 +4,17 @@ import {  StyleSheet, TextInput } from 'react-native';
 class LoginInput extends Component {
   render() {
     return (
-        <TextInput
-          style={styles.textInput}
-          placeholder={this.props.placeholder}
-          returnKeyType={this.props.returnKeyType}
-          keyboardType={this.props.keyboardType}
-          onChangeText={this.props.onChangeText}
-          value={this.props.value}
-          autoCapitalize={this.props.autoCapitalize}
-          autoCorrect={false}
-          maxLength={16}
-          underlineColorAndroid={'transparent'} />
+      <TextInput
+        style={styles.textInput}
+        placeholder={this.props.placeholder}
+        returnKeyType={this.props.returnKeyType}
+        keyboardType={this.props.keyboardType}
+        onChangeText={this.props.onChangeText}
+        value={this.props.value}
+        autoCapitalize={this.props.autoCapitalize}
+        autoCorrect={false}
+        maxLength={16}
+        underlineColorAndroid={'transparent'} />
     )
   }
 }
