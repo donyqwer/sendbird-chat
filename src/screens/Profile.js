@@ -29,8 +29,7 @@ class Profile extends Component {
       <Button 
         containerViewStyle={{marginLeft: 0, marginRight: 0}}
         buttonStyle={{paddingRight: 14}}
-        color={'#7d62d9'}
-        title='save'
+        icon={{ name: 'check', type: 'font-awesome', color: '#7d62d9', size: 18 }}
         backgroundColor='transparent'
         onPress={ () => { params.handleSave() } }
       />
