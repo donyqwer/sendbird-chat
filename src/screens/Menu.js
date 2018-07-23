@@ -45,7 +45,7 @@ class Menu extends Component {
   }
 
   _onGroupChannelPress = () => {
-    // TODO: GroupChannel screen
+    this.props.navigation.navigate({ routeName: 'GroupChannel' })
   }
 
   _onDisconnectButtonPress = () => {

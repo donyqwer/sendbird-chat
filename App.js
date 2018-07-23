@@ -9,6 +9,8 @@ import Menu from './src/screens/Menu';
 import Profile from './src/screens/Profile';
 import OpenChanel from './src/screens/OpenChanel';
 import OpenChannelCreate from './src/screens/OpenChannelCreate';
+import GroupChannel from './src/screens/GroupChannel';
+import GroupChannelInvite from './src/screens/GroupChannelInvite';
 import Chat from './src/screens/Chat';
 
 const MainNavigator = createStackNavigator({
@@ -17,6 +19,8 @@ const MainNavigator = createStackNavigator({
   Profile: { screen: Profile },
   OpenChanel: { screen: OpenChanel },
   OpenChannelCreate: { screen: OpenChannelCreate },
+  GroupChannel: { screen: GroupChannel },
+  GroupChannelInvite: { screen: GroupChannelInvite },
   Chat: { screen: Chat }
 });
 
