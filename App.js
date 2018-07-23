@@ -8,6 +8,7 @@ import Login from './src/screens/Login';
 import Menu from './src/screens/Menu';
 import Profile from './src/screens/Profile';
 import OpenChanel from './src/screens/OpenChanel';
+import OpenChannelCreate from './src/screens/OpenChannelCreate';
 import Chat from './src/screens/Chat';
 
 const MainNavigator = createStackNavigator({
@@ -15,6 +16,7 @@ const MainNavigator = createStackNavigator({
   Menu: { screen: Menu },
   Profile: { screen: Profile },
   OpenChanel: { screen: OpenChanel },
+  OpenChannelCreate: { screen: OpenChannelCreate },
   Chat: { screen: Chat }
 });
 
