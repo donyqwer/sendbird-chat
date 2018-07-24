@@ -6,3 +6,4 @@ export * from './chatActions';
 export * from './openChannelCreateActions';
 export * from './groupChannelActions';
 export * from './groupChannelInviteActions';
+export * from './memberActions';

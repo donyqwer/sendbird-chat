@@ -12,6 +12,7 @@ import OpenChannelCreate from './src/screens/OpenChannelCreate';
 import GroupChannel from './src/screens/GroupChannel';
 import GroupChannelInvite from './src/screens/GroupChannelInvite';
 import Chat from './src/screens/Chat';
+import Member from './src/screens/Member';
 
 const MainNavigator = createStackNavigator({
   Login: { screen: Login },
@@ -21,7 +22,8 @@ const MainNavigator = createStackNavigator({
   OpenChannelCreate: { screen: OpenChannelCreate },
   GroupChannel: { screen: GroupChannel },
   GroupChannelInvite: { screen: GroupChannelInvite },
-  Chat: { screen: Chat }
+  Chat: { screen: Chat },
+  Member: { screen: Member }
 });
 
 export default class App extends Component {
