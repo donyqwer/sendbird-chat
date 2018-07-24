@@ -35,7 +35,6 @@ export default (state = INITAL_STATE, action) => {
     case OPEN_CHANNEL_LIST_FAIL: 
       return { ...state, isLoading: false };
     case GET_OPEN_CHANNEL_SUCCESS:
-      console.log(action.channel);
       return { ...state, channel: action.channel };
     case GET_OPEN_CHANNEL_FAIL:
       return { ...state, channel: null };

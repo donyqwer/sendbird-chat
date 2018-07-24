@@ -83,3 +83,33 @@ export const sbUserBlock = (blockUserId) => {
     })
   });
 }
+
+export const sbUserUnblock = (unblockUserId) => {
+  return new Promise((resolve, reject) => {
+    const sb = SendBird.getInstance();
+    sb.unblockUserWithUserId(unblockUserId, (user, error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(user);
+      }
+    })
+  });
+}
+
+export const sbCreateBlockedUserListQuery = () => {
+  const sb = SendBird.getInstance();
+  return sb.createBlockedUserListQuery();
+}
+
+export const sbGetBlockUserList = (blockedUserListQuery) => {
+  return new Promise((resolve, reject) => {
+    blockedUserListQuery.next((blockedUsers, error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(blockedUsers);
+      }
+    });
+  });
+}

@@ -29,7 +29,6 @@ export const sbGetOpenChannel = (channelUrl) => {
       if (error) {
         reject(error);
       } else {
-        console.log(channel);
         resolve(channel);
       }
     })

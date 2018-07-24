@@ -7,3 +7,4 @@ export * from './openChannelCreateActions';
 export * from './groupChannelActions';
 export * from './groupChannelInviteActions';
 export * from './memberActions';
+export * from './blockUserActions';

@@ -9,6 +9,7 @@ import openChannelCreate from './openChannelCreateReducer';
 import groupChannel from './groupChannelReducer';
 import groupChannelInvite from './groupChannelInviteReducer';
 import member from './memberReducer';
+import blockUser from './blockUserReducer';
 
 export default combineReducers({
   login,
@@ -19,5 +20,6 @@ export default combineReducers({
   groupChannel,
   groupChannelInvite,
   chat,
-  member
+  member,
+  blockUser
 });
