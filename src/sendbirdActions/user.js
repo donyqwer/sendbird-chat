@@ -70,3 +70,16 @@ export const sbGetCurrentInfo = () => {
   }
   return {};
 }
+
+export const sbUserBlock = (blockUserId) => {
+  return new Promise((resolve, reject) => {
+    const sb = SendBird.getInstance();
+    sb.blockUserWithUserId(blockUserId, (user, error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(user);
+      }
+    })
+  });
+}

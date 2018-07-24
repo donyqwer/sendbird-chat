@@ -2,21 +2,36 @@ import {
   INIT_CHAT_SCREEN,
   CREATE_CHAT_HANDLER_SUCCESS,
   CREATE_CHAT_HANDLER_FAIL,
+  CHANNEL_TITLE_CHANGED,
+  CHANNEL_TITLE_CHANGED_FAIL,
   MESSAGE_LIST_SUCCESS,
   MESSAGE_LIST_FAIL,
   SEND_MESSAGE_TEMPORARY,
   SEND_MESSAGE_SUCCESS,
   SEND_MESSAGE_FAIL,
+  USER_BLOCK_SUCCESS,
+  USER_BLOCK_FAIL,
   CHANNEL_EXIT_SUCCESS,
   CHANNEL_EXIT_FAIL,
+  SEND_TYPING_START_SUCCESS,
+  SEND_TYPING_START_FAIL,
+  SEND_TYPING_END_SUCCESS,
+  SEND_TYPING_END_FAIL,
+
   MESSAGE_RECEIVED,
   MESSAGE_UPDATED,
-  MESSAGE_DELETED
+  MESSAGE_DELETED,
+  CHANNEL_CHANGED,
+  TYPING_STATUS_UPDATED,
+  READ_RECEIPT_UPDATED
 } from '../actions/types';
 
 const INITAL_STATE = {
   list: [],
-  exit: false
+  memberCount: 0,
+  title: '',
+  exit: false,
+  typing: ''
 }
 
 export default (state = INITAL_STATE, action) => {
@@ -27,6 +42,10 @@ export default (state = INITAL_STATE, action) => {
       return { ...state }
     case CREATE_CHAT_HANDLER_FAIL:
       return { ...state }
+    case CHANNEL_TITLE_CHANGED:
+      return { ...state, title: action.title, memberCount: action.memberCount }
+    case CHANNEL_TITLE_CHANGED_FAIL:
+      return { ...state }
     case MESSAGE_LIST_SUCCESS:
       return { ...state, list: [...state.list, ...action.list] };
     case MESSAGE_LIST_FAIL:
@@ -36,7 +55,7 @@ export default (state = INITAL_STATE, action) => {
     case SEND_MESSAGE_SUCCESS:
       const newMessage = action.message;
       const sendSuccessList = state.list.map((message) => {
-        if (message.reqId.toString() === newMessage.reqId.toString()) {
+        if (message.reqId && newMessage.reqId && message.reqId.toString() === newMessage.reqId.toString()) {
           return newMessage;
         } else {
           return message;
@@ -50,6 +69,7 @@ export default (state = INITAL_STATE, action) => {
       return { ...state, exit: true };
     case CHANNEL_EXIT_FAIL:
       return { ...state, exit: false };
+    
     case MESSAGE_RECEIVED:
       return { ...state, list: [...[action.payload], ...state.list]}
     case MESSAGE_UPDATED:
@@ -66,6 +86,12 @@ export default (state = INITAL_STATE, action) => {
         return message.messageId.toString() !== action.payload.toString();
       });
       return { ...state, list: deletedList }
+    case CHANNEL_CHANGED:
+      return { ...state, memberCount: action.memberCount, title: action.title }
+    case TYPING_STATUS_UPDATED:
+      return { ...state, typing: action.typing };
+    case READ_RECEIPT_UPDATED:
+      return { ...state, list: state.list };
     default:
       return state;
   }

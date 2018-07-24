@@ -52,16 +52,42 @@ export const INVITE_GROUP_CHANNEL_FAIL = 'invite_group_channel_fail';
 export const GROUP_CHANNEL_CHANGED = 'group_channel_changed';
 
 //Chat type
-export const INIT_CHAT_SCREEN = 'INIT_CHAT_SCREEN';
-export const CREATE_CHAT_HANDLER_SUCCESS = 'CREATE_CHAT_HANDLER_SUCCESS';
-export const CREATE_CHAT_HANDLER_FAIL = 'CREATE_CHAT_HANDLER_FAIL';
-export const MESSAGE_LIST_SUCCESS = 'MESSAGE_LIST_SUCCESS';
-export const MESSAGE_LIST_FAIL = 'MESSAGE_LIST_FAIL';
-export const SEND_MESSAGE_TEMPORARY = 'SEND_MESSAGE_TEMPORARY';
-export const SEND_MESSAGE_SUCCESS = 'SEND_MESSAGE_SUCCESS';
-export const SEND_MESSAGE_FAIL = 'SEND_MESSAGE_FAIL';
-export const CHANNEL_EXIT_SUCCESS = 'CHANNEL_EXIT_SUCCESS';
-export const CHANNEL_EXIT_FAIL = 'CHANNEL_EXIT_FAIL';
-export const MESSAGE_RECEIVED = 'MESSAGE_RECEIVED';
-export const MESSAGE_UPDATED = 'MESSAGE_UPDATED';
-export const MESSAGE_DELETED = 'MESSAGE_DELETED';
+export const INIT_CHAT_SCREEN = 'init_chat_screen';
+export const CREATE_CHAT_HANDLER_SUCCESS = 'create_chat_handler_success';
+export const CREATE_CHAT_HANDLER_FAIL = 'create_chat_handler_fail';
+export const CHANNEL_TITLE_CHANGED = 'channel_title_changed';
+export const CHANNEL_TITLE_CHANGED_FAIL = 'channel_title_changed_fail';
+export const MESSAGE_LIST_SUCCESS = 'message_list_success';
+export const MESSAGE_LIST_FAIL = 'message_list_fail';
+export const SEND_MESSAGE_TEMPORARY = 'send_message_temporary';
+export const SEND_MESSAGE_SUCCESS = 'send_message_success';
+export const SEND_MESSAGE_FAIL = 'send_message_fail';
+
+export const SEND_TYPING_START_SUCCESS = 'send_typing_start_success';
+export const SEND_TYPING_START_FAIL = 'send_typing_start_fail';
+export const SEND_TYPING_END_SUCCESS = 'send_typing_end_success';
+export const SEND_TYPING_END_FAIL = 'send_typing_end_fail';
+
+export const CHANNEL_EXIT_SUCCESS = 'channel_exit_success';
+export const CHANNEL_EXIT_FAIL = 'channel_exit_fail';
+
+export const MESSAGE_RECEIVED = 'message_received';
+export const MESSAGE_UPDATED = 'message_updated';
+export const MESSAGE_DELETED = 'message_deleted';
+export const CHANNEL_CHANGED = 'channel_changed';
+export const TYPING_STATUS_UPDATED = 'typing_status_updated';
+export const READ_RECEIPT_UPDATED = 'read_receipt_updated';
+
+// Member/Participant
+export const INIT_MEMBER = 'init_member';
+export const MEMBER_LIST_SUCCESS = 'member_list_success';
+export const MEMBER_LIST_FAIL = 'member_list_fail';
+
+// Block
+export const USER_BLOCK_SUCCESS = 'user_block_success';
+export const USER_BLOCK_FAIL = 'user_block_fail';
+export const INIT_BLOCK_USER = 'init_block_user';
+export const BLOCK_LIST_SUCCESS = 'block_list_success';
+export const BLOCK_LIST_FAIL = 'block_list_fail';
+export const USER_UNBLOCK_SUCCESS = 'user_unblock_success';
+export const USER_UNBLOCK_FAIL = 'user_unblock_fail';
