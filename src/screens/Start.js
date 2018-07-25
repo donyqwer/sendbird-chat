@@ -28,7 +28,7 @@ class Start extends Component {
                     return notif.channelType !== "group_messaging"
                       && notif.channelType !== "messaging";
                   };
-                  const channelType = isOpenChannel() ? "OpenChannel" : "GroupChannel";
+                  const channelType = isOpenChannel() ? "OpenChanel" : "GroupChannel";
                   this.props.navigation.dispatch(NavigationActions.reset({
                     index : 2,
                     actions : [
