@@ -23,7 +23,10 @@ import {
   MESSAGE_DELETED,
   CHANNEL_CHANGED,
   TYPING_STATUS_UPDATED,
-  READ_RECEIPT_UPDATED
+  READ_RECEIPT_UPDATED,
+
+  SEND_BOT_MESSAGE_SUCCESS,
+  SEND_BOT_MESSAGE_FAIL
 } from '../actions/types';
 
 const INITAL_STATE = {
@@ -31,7 +34,8 @@ const INITAL_STATE = {
   memberCount: 0,
   title: '',
   exit: false,
-  typing: ''
+  typing: '',
+  botContext: []
 }
 
 export default (state = INITAL_STATE, action) => {
@@ -92,6 +96,10 @@ export default (state = INITAL_STATE, action) => {
       return { ...state, typing: action.typing };
     case READ_RECEIPT_UPDATED:
       return { ...state, list: state.list };
+    case SEND_BOT_MESSAGE_SUCCESS: 
+      return { ...state, botContext: action.payload };
+    case SEND_BOT_MESSAGE_FAIL: 
+      return { ...state, botContext: action.payload };
     default:
       return state;
   }

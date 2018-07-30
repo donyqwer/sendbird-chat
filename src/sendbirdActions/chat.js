@@ -1,6 +1,9 @@
 import { sbGetOpenChannel } from './openChanel';
 import { sbGetGroupChannel } from './groupChannel';
+import { sbApiToken } from '../configs/sendbird';
 import SendBird from 'sendbird';
+
+const API_TOKEN = sbApiToken;
 
 export const sbCreatePreviousMessageListQuery = (channelUrl, isOpenChannel) => {
   return new Promise((resolve, reject) => {
@@ -82,3 +85,23 @@ export const sbMarkAsRead = ({ channelUrl, channel }) => {
     .then((channel) => channel.markAsRead());
   }
 }
+
+export const sendBotMessage = async (channel_url, message) => {
+  const DEFAULT_BASE_URL = 'https://api.sendbird.com/v3/bots/';
+  const BOTS_NAME = '123rwwer32';
+
+  const data = {
+    "channel_url": channel_url,
+    "message": message,
+  };
+
+  fetch(DEFAULT_BASE_URL + BOTS_NAME + '/send', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Api-Token': API_TOKEN,
+      'charset': "utf-8"
+    },
+    body: JSON.stringify(data)
+  });
+};

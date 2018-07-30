@@ -5,6 +5,10 @@ import { connect } from 'react-redux';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { sendbirdLogout, initMenu } from '../actions';
 import { Spinner, HorizontalRuler, StatusBar, Header } from '../components/common';
+import Dialogflow from "react-native-dialogflow";
+import { DialogflowApiID } from '../configs/dialogflow';
+import { dialogFlowQuery, dialogConnect } from '../dialogflowActions';
+import { sendBotMessage } from '../sendbirdActions';
 
 class Menu extends Component {
   static navigationOptions = {
@@ -16,6 +20,8 @@ class Menu extends Component {
     this.state = {
       isLoading: false
     };
+
+    dialogConnect("012394usa");
   }
 
   componentWillMount() {
@@ -34,6 +40,27 @@ class Menu extends Component {
         this.props.navigation.dispatch(resetAction);
       }
     });
+  }
+
+  _onDialogButtonPress = () => {
+    // const contexts = [{
+    //   name: "role",
+    //   lifespan: 1,
+    // }];
+     
+    // Dialogflow.setContexts(contexts);
+
+    // Dialogflow.requestQuery("hi", result=>console.log(result), error=>console.log(error));
+
+    dialogFlowQuery('oke?', 'aboutcompany')
+    .then((result) => {
+      const msg = result.result.fulfillment.speech;
+      const context = result.result.contexts[0].name;
+      console.log('msg : '+ msg + '\n' + 'contexts : '+ context);
+    });
+    // const channel = 'sendbird_group_channel_69474489_0ce0557489eae77795ce1c463285c93cafbb4cfb';
+    // const msg = 'Hi Im AiVI';
+    // sendBotMessage(channel, msg);
   }
 
   _onProfileButtonPress = () => {
@@ -90,6 +117,17 @@ class Menu extends Component {
           icon={{name: 'users', type: 'font-awesome' , color: mainColor, size: 16}}
           title='Group Channel' 
           onPress={this._onGroupChannelPress}
+        />
+        <HorizontalRuler />
+        <Button
+          containerViewStyle={styles.menuViewStyle}
+          buttonStyle={styles.buttonStyle}
+          backgroundColor='#fff'
+          color='#7d62d9'
+          color={mainColor}
+          icon={{name: 'send', type: 'font-awesome' , color: mainColor, size: 16}}
+          title='Test Dialog'
+          onPress={this._onDialogButtonPress}
         />
         <HorizontalRuler />
         <Button

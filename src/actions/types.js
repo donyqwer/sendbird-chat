@@ -91,3 +91,7 @@ export const BLOCK_LIST_SUCCESS = 'block_list_success';
 export const BLOCK_LIST_FAIL = 'block_list_fail';
 export const USER_UNBLOCK_SUCCESS = 'user_unblock_success';
 export const USER_UNBLOCK_FAIL = 'user_unblock_fail';
+
+//Bot
+export const SEND_BOT_MESSAGE_SUCCESS = 'send_bot_message_success';
+export const SEND_BOT_MESSAGE_FAIL = 'send_bot_message_fail';

@@ -23,7 +23,10 @@ import {
   MESSAGE_DELETED,
   CHANNEL_CHANGED,
   TYPING_STATUS_UPDATED,
-  READ_RECEIPT_UPDATED
+  READ_RECEIPT_UPDATED,
+
+  SEND_BOT_MESSAGE_SUCCESS,
+  SEND_BOT_MESSAGE_FAIL
 } from './types';
 
 import { 
@@ -38,8 +41,10 @@ import {
   sbTypingStart,
   sbTypingEnd,
   sbIsTyping,
-  sbMarkAsRead
+  sbMarkAsRead,
+  sendBotMessage
 } from '../sendbirdActions';
+import { dialogFlowQuery } from '../dialogflowActions';
 
 import SendBird from 'sendbird';
 
@@ -218,12 +223,12 @@ export const getPrevMessageList = (previousMessageListQuery) => {
   }
 }
 
-export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage) => {
+export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage, context) => {
   return (dispatch) => {
     if (isOpenChannel) {
       sbGetOpenChannel(channelUrl)
       .then((channel) => {
-        sendTextMessage(dispatch, channel, textMessage);
+        sendTextMessage(dispatch, channel, textMessage, isOpenChannel, context);
       })
       .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
     } else {
@@ -236,7 +241,7 @@ export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage) => {
   }
 }
 
-const sendTextMessage = (dispatch, channel, textMessage) => {
+const sendTextMessage = (dispatch, channel, textMessage, isOpenChannel, context) => {
   const messageTemp = sbSendTextMessage(channel, textMessage, (message, error) => {
     if (error) {
       dispatch({ type: SEND_MESSAGE_FAIL });
@@ -245,6 +250,9 @@ const sendTextMessage = (dispatch, channel, textMessage) => {
         type: SEND_MESSAGE_SUCCESS,
         message: message
       });
+      if(!isOpenChannel){
+        sendQueryToDialogFlow(dispatch, textMessage, context, channel.url);
+      }
     }
   });
   dispatch({
@@ -293,4 +301,33 @@ export const channelExit = (channelUrl, isOpenChannel) => {
       dispatch({ type: CHANNEL_EXIT_SUCCESS });
     }
   }
+}
+
+const sendQueryToDialogFlow = (dispatch, message, context, channel) => {
+  console.log(message);
+  dialogFlowQuery(message, context)
+  .then((response) => response.result)
+  .then((result) => {
+    const msg = result.fulfillment.speech;
+    const nextContext = result.contexts;
+
+    console.log('msg: '+ msg);
+    console.log( 'receive context :' );
+    console.log(nextContext);
+    
+    sendBotMessage(channel, msg)
+    .then(() => {
+      dispatch({
+        type: SEND_BOT_MESSAGE_SUCCESS,
+        payload: nextContext
+      })
+    })
+    .catch(() => {
+      dispatch({
+        type: SEND_BOT_MESSAGE_FAIL,
+        payload: context
+      })
+    })
+  })
+  .catch((error) => console.log(error));
 }
