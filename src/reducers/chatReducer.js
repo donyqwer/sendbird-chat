@@ -25,8 +25,13 @@ import {
   TYPING_STATUS_UPDATED,
   READ_RECEIPT_UPDATED,
 
+  CHANNEL_META_DATA_RECEIVED,
+  CHANNEL_META_DATA_NOT_RECEIVED,
+
   SEND_BOT_MESSAGE_SUCCESS,
-  SEND_BOT_MESSAGE_FAIL
+  SEND_BOT_MESSAGE_FAIL,
+  DIALOG_FLOW_CONECTED,
+  DIALOG_FLOW_NOT_CONECTED
 } from '../actions/types';
 
 const INITAL_STATE = {
@@ -35,7 +40,11 @@ const INITAL_STATE = {
   title: '',
   exit: false,
   typing: '',
-  botContext: []
+  dialog_flow_status: false,
+  cb_session: '',
+  cb_status: '',
+  cb_last_context: [],
+  chat_status: ''
 }
 
 export default (state = INITAL_STATE, action) => {
@@ -96,10 +105,18 @@ export default (state = INITAL_STATE, action) => {
       return { ...state, typing: action.typing };
     case READ_RECEIPT_UPDATED:
       return { ...state, list: state.list };
+    case DIALOG_FLOW_CONECTED: 
+      return { ...state, dialog_flow_status: true };
+    case DIALOG_FLOW_NOT_CONECTED:
+      return { ...state, dialog_flow_status: false };
     case SEND_BOT_MESSAGE_SUCCESS: 
-      return { ...state, botContext: action.payload };
+      return { ...state, cb_last_context: action.payload };
     case SEND_BOT_MESSAGE_FAIL: 
-      return { ...state, botContext: action.payload };
+      return { ...state, cb_last_context: action.payload };
+    case CHANNEL_META_DATA_RECEIVED: 
+      return { ...state, cb_session: action.cb_session, cb_status: action.cb_status, cb_last_context: action.cb_last_context, chat_status: action.chat_status };
+    case CHANNEL_META_DATA_NOT_RECEIVED: 
+      return { ...state };
     default:
       return state;
   }

@@ -5,10 +5,8 @@ import { connect } from 'react-redux';
 import { NavigationActions, StackActions } from 'react-navigation';
 import { sendbirdLogout, initMenu } from '../actions';
 import { Spinner, HorizontalRuler, StatusBar, Header } from '../components/common';
-import Dialogflow from "react-native-dialogflow";
-import { DialogflowApiID } from '../configs/dialogflow';
-import { dialogFlowQuery, dialogConnect } from '../dialogflowActions';
-import { sendBotMessage } from '../sendbirdActions';
+import { createGroupChannel } from '../actions';
+import { eventQuery } from '../dialogflowActions';
 
 class Menu extends Component {
   static navigationOptions = {
@@ -20,8 +18,6 @@ class Menu extends Component {
     this.state = {
       isLoading: false
     };
-
-    dialogConnect("012394usa");
   }
 
   componentWillMount() {
@@ -29,6 +25,8 @@ class Menu extends Component {
   }
 
   componentWillReceiveProps(props) {
+    const { channel } = props;
+    
     AsyncStorage.getItem("user", (err, result) => {
       if(!result) {
         const resetAction = StackActions.reset({
@@ -40,27 +38,19 @@ class Menu extends Component {
         this.props.navigation.dispatch(resetAction);
       }
     });
+
+    if (channel) {
+      this.setState({ isLoading: false }, () => {
+        this.props.navigation.navigate('GroupChannel', { channel: channel, botInitiate: true })
+      });
+    }
   }
 
   _onDialogButtonPress = () => {
-    // const contexts = [{
-    //   name: "role",
-    //   lifespan: 1,
-    // }];
-     
-    // Dialogflow.setContexts(contexts);
-
-    // Dialogflow.requestQuery("hi", result=>console.log(result), error=>console.log(error));
-
-    dialogFlowQuery('oke?', 'aboutcompany')
-    .then((result) => {
-      const msg = result.result.fulfillment.speech;
-      const context = result.result.contexts[0].name;
-      console.log('msg : '+ msg + '\n' + 'contexts : '+ context);
+    this.setState({ isLoading: true }, () => {
+      const isDistinct = true;
+      this.props.createGroupChannel([], isDistinct);
     });
-    // const channel = 'sendbird_group_channel_69474489_0ce0557489eae77795ce1c463285c93cafbb4cfb';
-    // const msg = 'Hi Im AiVI';
-    // sendBotMessage(channel, msg);
   }
 
   _onProfileButtonPress = () => {
@@ -72,7 +62,7 @@ class Menu extends Component {
   }
 
   _onGroupChannelPress = () => {
-    this.props.navigation.navigate({ routeName: 'GroupChannel' })
+    this.props.navigation.navigate('GroupChannel', { channel: null, botInitiate: false })
   }
 
   _onDisconnectButtonPress = () => {
@@ -125,8 +115,8 @@ class Menu extends Component {
           backgroundColor='#fff'
           color='#7d62d9'
           color={mainColor}
-          icon={{name: 'send', type: 'font-awesome' , color: mainColor, size: 16}}
-          title='Test Dialog'
+          icon={{name: 'github-alt', type: 'font-awesome' , color: mainColor, size: 16}}
+          title='Open AiVI'
           onPress={this._onDialogButtonPress}
         />
         <HorizontalRuler />
@@ -146,12 +136,13 @@ class Menu extends Component {
   }
 }
 
-function mapStateToProps({ menu }) {
+function mapStateToProps({ menu, groupChannelInvite }) {
   const { isDisconnected } = menu;
-  return { isDisconnected };
+  const { channel } = groupChannelInvite;
+  return { isDisconnected, channel };
 };
 
-export default connect(mapStateToProps, { sendbirdLogout, initMenu })(Menu);
+export default connect(mapStateToProps, { sendbirdLogout, initMenu, createGroupChannel })(Menu);
 
 const styles = {
   containerViewStyle: {

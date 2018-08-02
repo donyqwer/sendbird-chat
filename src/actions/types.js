@@ -51,6 +51,10 @@ export const INVITE_GROUP_CHANNEL_FAIL = 'invite_group_channel_fail';
 
 export const GROUP_CHANNEL_CHANGED = 'group_channel_changed';
 
+export const CHANNEL_META_DATA_RECEIVED = 'channel_meta_data_received';
+export const CHANNEL_META_DATA_NOT_RECEIVED = 'channel_meta_data_not_received';
+
+
 //Chat type
 export const INIT_CHAT_SCREEN = 'init_chat_screen';
 export const CREATE_CHAT_HANDLER_SUCCESS = 'create_chat_handler_success';
@@ -93,5 +97,8 @@ export const USER_UNBLOCK_SUCCESS = 'user_unblock_success';
 export const USER_UNBLOCK_FAIL = 'user_unblock_fail';
 
 //Bot
+export const DIALOG_FLOW_CONECTED = 'df_connected';
+export const DIALOG_FLOW_NOT_CONECTED = 'df_not_connected';
+
 export const SEND_BOT_MESSAGE_SUCCESS = 'send_bot_message_success';
 export const SEND_BOT_MESSAGE_FAIL = 'send_bot_message_fail';

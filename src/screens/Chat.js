@@ -13,14 +13,15 @@ import {
   onUserBlockPress,
   typingStart,
   typingEnd,
-  channelExit
+  channelExit,
+  getChannelMetaData,
+  connectToDialogFlow
 } from "../actions";
 import { Button } from 'react-native-elements';
 import { Spinner } from "../components/common";
 import { BarIndicator } from "react-native-indicators";
 import { TextItem, MessageInput, Message, AdminMessage } from '../components';
 import { sbGetGroupChannel, sbGetOpenChannel, sbCreatePreviousMessageListQuery, sbAdjustMessageList, sbMarkAsRead } from "../sendbirdActions";
-import { dialogConnect } from '../dialogflowActions';
 
 class Chat extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -95,6 +96,7 @@ class Chat extends Component {
     this.props.initChatScreen();
     this.props.navigation.setParams({ handleHeaderLeft: this._onBackButtonPress });
     const { channelUrl, isOpenChannel, isFromPayload } = this.props.navigation.state.params;
+    this.props.getChannelMetaData(channelUrl);
     if (isOpenChannel) {
       sbGetOpenChannel(channelUrl).then(channel => this.setState({ channel }, () => this._componentInit()));
     } else {
@@ -120,8 +122,6 @@ class Chat extends Component {
     if (!isOpenChannel) {
       sbMarkAsRead({ channelUrl });
     }
-
-    dialogConnect(channelUrl);
   };
 
   componentDidUpdate() {
@@ -141,7 +141,7 @@ class Chat extends Component {
   };
 
   componentWillReceiveProps(props) {
-    const { title, memberCount, list, exit } = props;
+    const { title, memberCount, list, exit, dialog_flow_status, cb_session } = props;
     const { channelUrl, isOpenChannel } = this.props.navigation.state.params;
 
     if (memberCount !== this.props.memberCount || title !== this.props.title) {
@@ -160,6 +160,10 @@ class Chat extends Component {
       this.setState({ isLoading: false }, () => {
         this.props.navigation.goBack();
       });
+    }
+
+    if(!dialog_flow_status && cb_session){
+      props.connectToDialogFlow(cb_session);
     }
   }
 
@@ -193,13 +197,13 @@ class Chat extends Component {
 
   _onSendButtonPress = () => {
     if (this.state.textMessage) {
-      const { botContext } = this.props;
+      const { cb_last_context, cb_session } = this.props;
       console.log( 'sending context :' );
-      console.log( botContext );
+      console.log( cb_last_context );
       const { channelUrl, isOpenChannel } = this.props.navigation.state.params;
       const { textMessage } = this.state;
       this.setState({ textMessage: "" }, () => {
-        this.props.onSendButtonPress(channelUrl, isOpenChannel, textMessage, botContext);
+        this.props.onSendButtonPress(channelUrl, isOpenChannel, textMessage, cb_session, cb_last_context);
         if(this.props && this.props.list && this.props.list.length > 0) {
           this.flatList.scrollToIndex({
             index: 0,
@@ -283,9 +287,9 @@ class Chat extends Component {
 }
 
 function mapStateToProps({ chat }) {
-  let { title, memberCount, list, exit, typing, botContext } = chat;
+  let { title, memberCount, list, exit, typing, dialog_flow_status, botContext, cb_session, cb_status, cb_last_context, chat_status } = chat;
   list = sbAdjustMessageList(list);
-  return { title, memberCount, list, exit, typing, botContext };
+  return { title, memberCount, list, exit, typing, dialog_flow_status, botContext, cb_session, cb_status, cb_last_context, chat_status };
 }
 
 export default connect(mapStateToProps, {
@@ -299,7 +303,9 @@ export default connect(mapStateToProps, {
   onUserBlockPress,
   typingStart,
   typingEnd,
-  channelExit
+  channelExit,
+  getChannelMetaData,
+  connectToDialogFlow
 })(Chat);
 
 const styles = {

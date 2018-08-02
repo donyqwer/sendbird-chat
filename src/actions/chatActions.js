@@ -25,6 +25,11 @@ import {
   TYPING_STATUS_UPDATED,
   READ_RECEIPT_UPDATED,
 
+  CHANNEL_META_DATA_RECEIVED,
+  CHANNEL_META_DATA_NOT_RECEIVED,
+
+  DIALOG_FLOW_CONECTED,
+  DIALOG_FLOW_NOT_CONECTED,
   SEND_BOT_MESSAGE_SUCCESS,
   SEND_BOT_MESSAGE_FAIL
 } from './types';
@@ -42,9 +47,11 @@ import {
   sbTypingEnd,
   sbIsTyping,
   sbMarkAsRead,
-  sendBotMessage
+  sendBotMessage,
+  sbGetMetaDataGroupChannel,
+  sbUpdateMetaDataGroupChannel
 } from '../sendbirdActions';
-import { dialogFlowQuery } from '../dialogflowActions';
+import { dialogFlowQuery, dialogConnect } from '../dialogflowActions';
 
 import SendBird from 'sendbird';
 
@@ -79,6 +86,32 @@ export const getChannelTitle = (channelUrl, isOpenChannel) => {
         dispatch({ type: CHANNEL_TITLE_CHANGED_FAIL })
       })
     }
+  }
+}
+
+export const getChannelMetaData = (channelUrl) => {
+  return (dispatch) => {
+    sbGetMetaDataGroupChannel(channelUrl)
+    .then((data) => {
+      dispatch({
+        type: CHANNEL_META_DATA_RECEIVED,
+        cb_session: data.cb_session,
+        cb_status: data.cb_status,
+        cb_last_context: data.cb_last_context? data.cb_last_context : [],
+        chat_status: data.chat_status
+      })
+    })
+    .catch((error) => {
+      console.log(error);
+      dispatch({ type: CHANNEL_META_DATA_NOT_RECEIVED })
+    })
+  }
+}
+
+export const connectToDialogFlow = (session) => {
+  return (dispatch) => {
+    dialogConnect(session);
+    dispatch({ type: DIALOG_FLOW_CONECTED });
   }
 }
 
@@ -223,25 +256,25 @@ export const getPrevMessageList = (previousMessageListQuery) => {
   }
 }
 
-export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage, context) => {
+export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage, sessionId, context) => {
   return (dispatch) => {
     if (isOpenChannel) {
       sbGetOpenChannel(channelUrl)
       .then((channel) => {
-        sendTextMessage(dispatch, channel, textMessage, isOpenChannel, context);
+        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context);
       })
       .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
     } else {
       sbGetGroupChannel(channelUrl)
       .then((channel) => {
-        sendTextMessage(dispatch, channel, textMessage);
+        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context);
       })
       .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
     }
   }
 }
 
-const sendTextMessage = (dispatch, channel, textMessage, isOpenChannel, context) => {
+const sendTextMessage = (dispatch, channel, textMessage, sessionId, isOpenChannel, context) => {
   const messageTemp = sbSendTextMessage(channel, textMessage, (message, error) => {
     if (error) {
       dispatch({ type: SEND_MESSAGE_FAIL });
@@ -251,7 +284,7 @@ const sendTextMessage = (dispatch, channel, textMessage, isOpenChannel, context)
         message: message
       });
       if(!isOpenChannel){
-        sendQueryToDialogFlow(dispatch, textMessage, context, channel.url);
+        sendQueryToDialogFlow(dispatch, textMessage, sessionId, context, channel.url);
       }
     }
   });
@@ -291,7 +324,9 @@ export const channelExit = (channelUrl, isOpenChannel) => {
       sbGetOpenChannel(channelUrl)
       .then((channel) => {
         sbOpenChannelExit(channel)
-        .then((response) => dispatch({ type: CHANNEL_EXIT_SUCCESS }))
+        .then((response) => {
+          dispatch({ type: CHANNEL_EXIT_SUCCESS });
+        })
         .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
       })
       .catch((error) => dispatch({ type: CHANNEL_EXIT_FAIL }))
@@ -303,9 +338,9 @@ export const channelExit = (channelUrl, isOpenChannel) => {
   }
 }
 
-const sendQueryToDialogFlow = (dispatch, message, context, channel) => {
+const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channel) => {
   console.log(message);
-  dialogFlowQuery(message, context)
+  dialogFlowQuery(message, sessionId, context)
   .then((response) => response.result)
   .then((result) => {
     const msg = result.fulfillment.speech;
@@ -314,9 +349,18 @@ const sendQueryToDialogFlow = (dispatch, message, context, channel) => {
     console.log('msg: '+ msg);
     console.log( 'receive context :' );
     console.log(nextContext);
-    
+    console.log(nextContext[0].name + ' == end-interview');
+
     sendBotMessage(channel, msg)
     .then(() => {
+      if(nextContext[0].name == 'end-interview'){
+        sbUpdateMetaDataGroupChannel(channel, { 
+          cb_last_context: nextContext,
+          cb_status: 3
+        });
+      }else {
+        sbUpdateMetaDataGroupChannel(channel, { cb_last_context: nextContext });
+      }
       dispatch({
         type: SEND_BOT_MESSAGE_SUCCESS,
         payload: nextContext

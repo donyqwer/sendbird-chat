@@ -7,6 +7,7 @@ export const dialogConnect = (session) => {
   Dialogflow.setConfiguration(
     APP_ID, Dialogflow.LANG_ENGLISH, session
   );
+  console.log(Dialogflow);
 };
 
 export const dialogContexts = (context) => {
@@ -15,7 +16,7 @@ export const dialogContexts = (context) => {
   Dialogflow.setContexts(contexts);
 };
 
-export const dialogFlowQuery = (message, context) => {
+export const dialogFlowQuery = (message, sessionId, context) => {
   return new Promise((resolve, reject) => {
     if (!message) {
       reject('message is required.');
@@ -26,8 +27,11 @@ export const dialogFlowQuery = (message, context) => {
       dialogContexts(context);
     }
 
-    Dialogflow.requestQuery(message, 
+    Dialogflow.requestQuery(
+      message,
+      sessionId,
       result=> { 
+        console.log(result),
         resolve(result)
       }, 
       error=>{
@@ -36,4 +40,32 @@ export const dialogFlowQuery = (message, context) => {
       }, 
     )
   })
+};
+
+export const eventQuery = async (eventName, sessionId, onResult, onError) => {
+
+  const DEFAULT_BASE_URL = 'https://api.api.ai/v1/';
+  const DEFAULT_API_VERSION = '20150910';
+
+  const data = {
+    "event":{  
+      "name": eventName
+    },
+    "lang": "en",
+    "sessionId": sessionId
+  };
+
+  fetch(DEFAULT_BASE_URL + "query?v=" + DEFAULT_API_VERSION, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Authorization': 'Bearer ' + APP_ID,
+      'charset': "utf-8"
+    },
+    body: JSON.stringify(data)
+  })
+  .then(function (response) {
+    var json = response.json().then(onResult)
+  })
+  .catch(onError);
 };

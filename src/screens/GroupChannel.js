@@ -23,6 +23,7 @@ import {
     sbUnixTimestampToDate, 
     sbGetChannelTitle 
 } from '../sendbirdActions';
+import { eventQuery } from '../dialogflowActions';
 
 class GroupChannel extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -59,11 +60,28 @@ class GroupChannel extends Component {
   }
 
   componentDidMount() {
+    const { channel, botInitiate } = this.props.navigation.state.params;
     this._initGroupChannelList();
+
+    if(channel && botInitiate){
+      eventQuery('welcome', channel.url.substring(38),
+        result=> { 
+          console.log(channel);
+          console.log(result.result.fulfillment.speech);
+        }, 
+        error=>{
+          console.log(error)
+        }
+      )
+    }
   }
 
   componentWillReceiveProps(props) {
     const { channel } = props;
+    this._openChat(channel);
+  }
+
+  _openChat = (channel) => {
     if (channel) {
       this.props.clearSelectedGroupChannel();
       this.props.navigation.navigate(
