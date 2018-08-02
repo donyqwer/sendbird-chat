@@ -31,7 +31,8 @@ import {
   DIALOG_FLOW_CONECTED,
   DIALOG_FLOW_NOT_CONECTED,
   SEND_BOT_MESSAGE_SUCCESS,
-  SEND_BOT_MESSAGE_FAIL
+  SEND_BOT_MESSAGE_FAIL,
+  BOT_ENDED
 } from './types';
 
 import { 
@@ -49,7 +50,8 @@ import {
   sbMarkAsRead,
   sendBotMessage,
   sbGetMetaDataGroupChannel,
-  sbUpdateMetaDataGroupChannel
+  sbUpdateMetaDataGroupChannel,
+  adminMessage
 } from '../sendbirdActions';
 import { dialogFlowQuery, dialogConnect } from '../dialogflowActions';
 
@@ -256,25 +258,25 @@ export const getPrevMessageList = (previousMessageListQuery) => {
   }
 }
 
-export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage, sessionId, context) => {
+export const onSendButtonPress = (channelUrl, isOpenChannel, textMessage, sessionId, context, cb_status) => {
   return (dispatch) => {
     if (isOpenChannel) {
       sbGetOpenChannel(channelUrl)
       .then((channel) => {
-        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context);
+        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context, cb_status);
       })
       .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
     } else {
       sbGetGroupChannel(channelUrl)
       .then((channel) => {
-        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context);
+        sendTextMessage(dispatch, channel, textMessage, sessionId, isOpenChannel, context, cb_status);
       })
       .catch( (error) => dispatch({ type: SEND_MESSAGE_FAIL }) )
     }
   }
 }
 
-const sendTextMessage = (dispatch, channel, textMessage, sessionId, isOpenChannel, context) => {
+const sendTextMessage = (dispatch, channel, textMessage, sessionId, isOpenChannel, context, cb_status) => {
   const messageTemp = sbSendTextMessage(channel, textMessage, (message, error) => {
     if (error) {
       dispatch({ type: SEND_MESSAGE_FAIL });
@@ -283,7 +285,7 @@ const sendTextMessage = (dispatch, channel, textMessage, sessionId, isOpenChanne
         type: SEND_MESSAGE_SUCCESS,
         message: message
       });
-      if(!isOpenChannel){
+      if(!isOpenChannel && cb_status == 1){
         sendQueryToDialogFlow(dispatch, textMessage, sessionId, context, channel.url);
       }
     }
@@ -338,7 +340,7 @@ export const channelExit = (channelUrl, isOpenChannel) => {
   }
 }
 
-const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channel) => {
+const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channelUrl) => {
   console.log(message);
   dialogFlowQuery(message, sessionId, context)
   .then((response) => response.result)
@@ -351,15 +353,20 @@ const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channel) =
     console.log(nextContext);
     console.log(nextContext[0].name + ' == end-interview');
 
-    sendBotMessage(channel, msg)
+    sendBotMessage(channelUrl, msg)
     .then(() => {
       if(nextContext[0].name == 'end-interview'){
-        sbUpdateMetaDataGroupChannel(channel, { 
+        sbUpdateMetaDataGroupChannel(channelUrl, { 
           cb_last_context: nextContext,
           cb_status: 3
         });
+        adminMessage(channelUrl, 'AIVI ended')
+        dispatch({
+          type: BOT_ENDED,
+          payload: 3
+        })
       }else {
-        sbUpdateMetaDataGroupChannel(channel, { cb_last_context: nextContext });
+        sbUpdateMetaDataGroupChannel(channelUrl, { cb_last_context: nextContext });
       }
       dispatch({
         type: SEND_BOT_MESSAGE_SUCCESS,

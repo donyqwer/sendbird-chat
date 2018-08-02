@@ -102,3 +102,4 @@ export const DIALOG_FLOW_NOT_CONECTED = 'df_not_connected';
 
 export const SEND_BOT_MESSAGE_SUCCESS = 'send_bot_message_success';
 export const SEND_BOT_MESSAGE_FAIL = 'send_bot_message_fail';
+export const BOT_ENDED = 'bot_ended';

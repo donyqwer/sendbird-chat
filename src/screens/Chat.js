@@ -197,13 +197,14 @@ class Chat extends Component {
 
   _onSendButtonPress = () => {
     if (this.state.textMessage) {
-      const { cb_last_context, cb_session } = this.props;
+      const { cb_last_context, cb_session, cb_status } = this.props;
       console.log( 'sending context :' );
       console.log( cb_last_context );
+      console.log( cb_status );
       const { channelUrl, isOpenChannel } = this.props.navigation.state.params;
       const { textMessage } = this.state;
       this.setState({ textMessage: "" }, () => {
-        this.props.onSendButtonPress(channelUrl, isOpenChannel, textMessage, cb_session, cb_last_context);
+        this.props.onSendButtonPress(channelUrl, isOpenChannel, textMessage, cb_session, cb_last_context, cb_status);
         if(this.props && this.props.list && this.props.list.length > 0) {
           this.flatList.scrollToIndex({
             index: 0,
@@ -244,6 +245,23 @@ class Chat extends Component {
     }
   };
 
+  _renderMsgInput = (status) => {
+    if(status == 1){
+      return (
+        <KeyboardAvoidingView style={styles.messageInputViewStyle}
+          behavior={'padding'}
+          keyboardVerticalOffset={90}>
+          {this._renderTyping()}
+          <MessageInput
+            onRightPress={this._onSendButtonPress}
+            textMessage={this.state.textMessage}
+            onChangeText={this._onTextMessageChanged}
+          />
+        </KeyboardAvoidingView>
+      );
+    }
+  } 
+
   _renderTyping = () => {
     const { isOpenChannel } = this.props.navigation.state.params;
     return isOpenChannel ? null : (
@@ -271,16 +289,7 @@ class Chat extends Component {
             onEndReachedThreshold={0}
           />
         </View>
-        <KeyboardAvoidingView style={styles.messageInputViewStyle}
-          behavior={'padding'}
-          keyboardVerticalOffset={90}>
-          {this._renderTyping()}
-          <MessageInput
-            onRightPress={this._onSendButtonPress}
-            textMessage={this.state.textMessage}
-            onChangeText={this._onTextMessageChanged}
-          />
-        </KeyboardAvoidingView>
+        {this._renderMsgInput(this.props.chat_status? this.props.chat_status : 0)}
       </View>
     );
   }

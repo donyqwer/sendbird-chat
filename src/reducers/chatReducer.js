@@ -31,7 +31,8 @@ import {
   SEND_BOT_MESSAGE_SUCCESS,
   SEND_BOT_MESSAGE_FAIL,
   DIALOG_FLOW_CONECTED,
-  DIALOG_FLOW_NOT_CONECTED
+  DIALOG_FLOW_NOT_CONECTED,
+  BOT_ENDED
 } from '../actions/types';
 
 const INITAL_STATE = {
@@ -113,6 +114,8 @@ export default (state = INITAL_STATE, action) => {
       return { ...state, cb_last_context: action.payload };
     case SEND_BOT_MESSAGE_FAIL: 
       return { ...state, cb_last_context: action.payload };
+    case BOT_ENDED: 
+      return { ...state, cb_status: action.payload };
     case CHANNEL_META_DATA_RECEIVED: 
       return { ...state, cb_session: action.cb_session, cb_status: action.cb_status, cb_last_context: action.cb_last_context, chat_status: action.chat_status };
     case CHANNEL_META_DATA_NOT_RECEIVED: 

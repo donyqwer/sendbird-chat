@@ -105,3 +105,24 @@ export const sendBotMessage = async (channel_url, message) => {
     body: JSON.stringify(data)
   });
 };
+
+export const adminMessage = async (channel_url, adminMsg) => {
+  const DEFAULT_BASE_URL = 'https://api.sendbird.com/v3/group_channels/';
+
+  const data = {
+    "message_type": "ADMM",
+    "message": adminMsg,
+    "custom_type": "entrance_message",
+    "is_silent": true
+  };
+
+  fetch(DEFAULT_BASE_URL + channel_url + '/messages', {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Api-Token': API_TOKEN,
+      'charset': "utf-8"
+    },
+    body: JSON.stringify(data)
+  });
+};

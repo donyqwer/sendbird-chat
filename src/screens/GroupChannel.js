@@ -12,6 +12,7 @@ import {
     clearSelectedGroupChannel,
     createGroupChannelListHandler
 } from '../actions'
+import { sendBotMessage } from '../sendbirdActions';
 import { 
     ListItem, 
     Avatar, 
@@ -21,7 +22,8 @@ import Swipeout from 'react-native-swipeout';
 import { 
     sbCreateGroupChannelListQuery, 
     sbUnixTimestampToDate, 
-    sbGetChannelTitle 
+    sbGetChannelTitle,
+    adminMessage 
 } from '../sendbirdActions';
 import { eventQuery } from '../dialogflowActions';
 
@@ -66,8 +68,16 @@ class GroupChannel extends Component {
     if(channel && botInitiate){
       eventQuery('welcome', channel.url.substring(38),
         result=> { 
+          const adminMsg = 'AIVI started. Please reply with 1 message only';
+          const botMsg = result.result.fulfillment.speech;
           console.log(channel);
-          console.log(result.result.fulfillment.speech);
+          console.log(botMsg);
+
+          sendBotMessage(channel.url, botMsg)
+          .then(() => { 
+            adminMessage(channel.url, adminMsg)
+          })
+
         }, 
         error=>{
           console.log(error)

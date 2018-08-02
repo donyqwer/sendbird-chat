@@ -6,7 +6,6 @@ import { NavigationActions, StackActions } from 'react-navigation';
 import { sendbirdLogout, initMenu } from '../actions';
 import { Spinner, HorizontalRuler, StatusBar, Header } from '../components/common';
 import { createGroupChannel } from '../actions';
-import { eventQuery } from '../dialogflowActions';
 
 class Menu extends Component {
   static navigationOptions = {
