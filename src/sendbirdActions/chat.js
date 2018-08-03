@@ -86,7 +86,7 @@ export const sbMarkAsRead = ({ channelUrl, channel }) => {
   }
 }
 
-export const sendBotMessage = async (channel_url, message) => {
+export const sendBotMessage = async (channel_url, message, onResult, onError) => {
   const DEFAULT_BASE_URL = 'https://api.sendbird.com/v3/bots/';
   const BOTS_NAME = '123rwwer32';
 
@@ -103,10 +103,14 @@ export const sendBotMessage = async (channel_url, message) => {
       'charset': "utf-8"
     },
     body: JSON.stringify(data)
-  });
+  })
+  .then((response) => {
+    var json = response.json().then(onResult)
+  })
+  .catch(onError);
 };
 
-export const adminMessage = async (channel_url, adminMsg) => {
+export const adminMessage = async (channel_url, adminMsg, onResult, onError) => {
   const DEFAULT_BASE_URL = 'https://api.sendbird.com/v3/group_channels/';
 
   const data = {
@@ -124,5 +128,9 @@ export const adminMessage = async (channel_url, adminMsg) => {
       'charset': "utf-8"
     },
     body: JSON.stringify(data)
-  });
+  })
+  .then((response) => {
+    var json = response.json().then(onResult)
+  })
+  .catch(onError);
 };

@@ -353,32 +353,32 @@ const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channelUrl
     console.log(nextContext);
     console.log(nextContext[0].name + ' == end-interview');
 
-    sendBotMessage(channelUrl, msg)
-    .then(() => {
-      if(nextContext[0].name == 'end-interview'){
-        sbUpdateMetaDataGroupChannel(channelUrl, { 
-          cb_last_context: nextContext,
-          cb_status: 3
-        });
-        adminMessage(channelUrl, 'AIVI ended')
+    sendBotMessage(channelUrl, msg,
+      onResult => {
+        if(nextContext[0].name == 'end-interview'){
+          sbUpdateMetaDataGroupChannel(channelUrl, { 
+            cb_last_context: nextContext,
+            cb_status: 3
+          });
+          adminMessage(channelUrl, 'AIVI ended')
+          dispatch({
+            type: BOT_ENDED,
+            payload: 3
+          })
+        }else {
+          sbUpdateMetaDataGroupChannel(channelUrl, { cb_last_context: nextContext });
+        }
         dispatch({
-          type: BOT_ENDED,
-          payload: 3
+          type: SEND_BOT_MESSAGE_SUCCESS,
+          payload: nextContext
         })
-      }else {
-        sbUpdateMetaDataGroupChannel(channelUrl, { cb_last_context: nextContext });
-      }
-      dispatch({
-        type: SEND_BOT_MESSAGE_SUCCESS,
-        payload: nextContext
-      })
-    })
-    .catch(() => {
+      },
+    onError => {
       dispatch({
         type: SEND_BOT_MESSAGE_FAIL,
         payload: context
       })
-    })
+    });
   })
   .catch((error) => console.log(error));
 }

@@ -73,11 +73,14 @@ class GroupChannel extends Component {
           console.log(channel);
           console.log(botMsg);
 
-          sendBotMessage(channel.url, botMsg)
-          .then(() => { 
-            adminMessage(channel.url, adminMsg)
-          })
-
+          adminMessage(channel.url, adminMsg,
+            onResult => {
+              sendBotMessage(channel.url, botMsg)
+            },
+            onError => {
+              console.log(onError);
+            }
+          )
         }, 
         error=>{
           console.log(error)
