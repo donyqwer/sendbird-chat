@@ -157,7 +157,17 @@ export const sbGetMetaDataGroupChannel = (channelUrl) => {
               chat_status: '1'
             })
             .then((data) => {
-              resolve(data);
+              const initContext = [{
+                name: "defaultwelcomeintent-followup",
+                lifespan: 1
+              }];
+              sbUpdateMetaDataGroupChannel(channelUrl, { 
+                cb_last_context: initContext,
+                cb_status: '1',
+                cb_session: channelUrl.substring(38),
+                chat_status: '1'
+              })
+              .then((data) => resolve(data));
             })
           }
         }
