@@ -24,7 +24,7 @@ export default (state = INITAL_STATE, action) => {
     case CREATE_GROUP_CHANNEL_SUCCESS: 
       return { ...state, channel: action.channel };
     case CREATE_GROUP_CHANNEL_FAIL:
-      return { ...state, channel: null };
+      return { ...state, channel: action.channel };
     case INVITE_GROUP_CHANNEL_SUCCESS:
       return { ...state, channel: action.channel };
     case INVITE_GROUP_CHANNEL_FAIL:

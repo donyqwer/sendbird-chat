@@ -42,6 +42,11 @@ class Menu extends Component {
       this.setState({ isLoading: false }, () => {
         this.props.navigation.navigate('GroupChannel', { channel: channel, botInitiate: true })
       });
+    }else {
+      console.log(channel);
+      this.setState({ isLoading: false }, () => {
+        this._onGroupChannelPress();
+      });
     }
   }
 

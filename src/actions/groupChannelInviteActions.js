@@ -60,7 +60,10 @@ export const createGroupChannel = (inviteUserIdList, isDistinct) => {
       });
     })
     .catch((error) => {
-      dispatch({ type: CREATE_GROUP_CHANNEL_FAIL });
+      dispatch({ 
+        type: CREATE_GROUP_CHANNEL_FAIL,
+        channel: false
+       });
     })
   }
 }
