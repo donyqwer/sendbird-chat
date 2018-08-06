@@ -70,8 +70,6 @@ class GroupChannel extends Component {
         result=> { 
           const adminMsg = 'AIVI started. Please reply with 1 message only';
           const botMsg = result.result.fulfillment.speech;
-          console.log(channel);
-          console.log(botMsg);
 
           adminMessage(channel.url, adminMsg,
             onResult => {

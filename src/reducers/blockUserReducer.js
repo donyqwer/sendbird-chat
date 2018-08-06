@@ -16,7 +16,6 @@ export default (state = INITAL_STATE, action) => {
     case INIT_BLOCK_USER: 
       return { ...state, ...INITAL_STATE };
     case BLOCK_LIST_SUCCESS:
-      console.log(action.list);
       return { ...state, list: action.list };
     case BLOCK_LIST_FAIL:
       return { ...state, list: [] };

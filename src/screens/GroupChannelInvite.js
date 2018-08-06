@@ -118,8 +118,6 @@ class GroupChannelInvite extends Component {
       return user.userId;
     });
 
-    console.log(inviteUserIdList);
-
     if (channelUrl) {
       this.props.inviteGroupChannel(inviteUserIdList, channelUrl);
     } else {

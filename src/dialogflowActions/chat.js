@@ -7,7 +7,6 @@ export const dialogConnect = (session) => {
   Dialogflow.setConfiguration(
     APP_ID, Dialogflow.LANG_ENGLISH, session
   );
-  console.log(Dialogflow);
 };
 
 export const dialogContexts = (context) => {
@@ -31,7 +30,6 @@ export const dialogFlowQuery = (message, sessionId, context) => {
       message,
       sessionId,
       result=> { 
-        console.log(result),
         resolve(result)
       }, 
       error=>{

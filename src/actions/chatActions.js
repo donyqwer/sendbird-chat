@@ -351,7 +351,6 @@ const sendQueryToDialogFlow = (dispatch, message, sessionId, context, channelUrl
     console.log('msg: '+ msg);
     console.log( 'receive context :' );
     console.log(nextContext);
-    console.log(nextContext[0].name + ' == end-interview');
 
     sendBotMessage(channelUrl, msg,
       onResult => {
